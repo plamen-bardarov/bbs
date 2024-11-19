@@ -494,7 +494,7 @@ var _ = Describe("ActualLRP", func() {
 		BeforeEach(func() {
 			lrpKey = models.NewActualLRPKey("some-guid", 2, "some-domain")
 			instanceKey = models.NewActualLRPInstanceKey("some-instance-guid", "some-cell-id")
-			netInfo = models.NewActualLRPNetInfo("1.2.3.4", "2.2.2.2", models.ActualLRPNetInfo_PreferredAddressUnknown, models.NewPortMapping(5678, 8080), models.NewPortMapping(1234, 8081))
+			netInfo = models.NewActualLRPNetInfo("1.2.3.4", "", "2.2.2.2", models.ActualLRPNetInfo_PreferredAddressUnknown, models.NewPortMapping(5678, 8080), models.NewPortMapping(1234, 8081))
 
 			lrp = models.ActualLRP{
 				ActualLRPKey:         lrpKey,
@@ -926,7 +926,7 @@ func itValidatesAbsenceOfTheInstanceKey(lrp *models.ActualLRP) {
 func itValidatesPresenceOfNetInfo(lrp *models.ActualLRP) {
 	Context("when net info is set", func() {
 		BeforeEach(func() {
-			lrp.ActualLRPNetInfo = models.NewActualLRPNetInfo("1.2.3.4", "2.2.2.2", models.ActualLRPNetInfo_PreferredAddressUnknown)
+			lrp.ActualLRPNetInfo = models.NewActualLRPNetInfo("1.2.3.4", "", "2.2.2.2", models.ActualLRPNetInfo_PreferredAddressUnknown)
 		})
 
 		It("validate does not return an error", func() {
@@ -950,7 +950,7 @@ func itValidatesPresenceOfNetInfo(lrp *models.ActualLRP) {
 func itValidatesAbsenceOfNetInfo(lrp *models.ActualLRP) {
 	Context("when net info is set", func() {
 		BeforeEach(func() {
-			lrp.ActualLRPNetInfo = models.NewActualLRPNetInfo("1.2.3.4", "2.2.2.2", models.ActualLRPNetInfo_PreferredAddressUnknown)
+			lrp.ActualLRPNetInfo = models.NewActualLRPNetInfo("1.2.3.4", "", "2.2.2.2", models.ActualLRPNetInfo_PreferredAddressUnknown)
 		})
 
 		It("validate returns an error", func() {

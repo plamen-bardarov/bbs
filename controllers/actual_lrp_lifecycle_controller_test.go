@@ -266,7 +266,7 @@ var _ = Describe("ActualLRP Lifecycle Controller", func() {
 		)
 
 		BeforeEach(func() {
-			netInfo = models.NewActualLRPNetInfo("1.1.1.1", "2.2.2.2", models.ActualLRPNetInfo_PreferredAddressUnknown, models.NewPortMapping(10, 20))
+			netInfo = models.NewActualLRPNetInfo("1.1.1.1", "", "2.2.2.2", models.ActualLRPNetInfo_PreferredAddressUnknown, models.NewPortMapping(10, 20))
 			internalRoutes = []*models.ActualLRPInternalRoute{{Hostname: "some-internal-route.apps.internal"}}
 			metricTags = map[string]string{"app_name": "some-app-name"}
 			routable = true

@@ -43,6 +43,7 @@ message ActualLRPNetInfo {
   }
 
   PreferredAddress preferred_address = 4 [(gogoproto.jsontag) = "preferred_address"];
+  string address6 = 5 [(gogoproto.jsontag) = "address6,omitempty"];
 }
 
 message ActualLRPInternalRoute {

@@ -116,7 +116,7 @@ var _ = Describe("ActualLRP API", func() {
 		otherLRP1Key = models.NewActualLRPKey(otherProcessGuid, otherIndex1, otherDomain)
 		otherLRPInstanceKey = models.NewActualLRPInstanceKey(otherInstanceGuid, otherCellID)
 
-		netInfo = models.NewActualLRPNetInfo("127.0.0.1", "10.10.10.10", models.ActualLRPNetInfo_PreferredAddressHost, models.NewPortMapping(8080, 80))
+		netInfo = models.NewActualLRPNetInfo("127.0.0.1", "", "10.10.10.10", models.ActualLRPNetInfo_PreferredAddressHost, models.NewPortMapping(8080, 80))
 		internalRoutes = model_helpers.NewActualLRPInternalRoutes()
 		metricTags = model_helpers.NewActualLRPMetricTags()
 		availabilityZone = "some-zone"
@@ -375,7 +375,7 @@ var _ = Describe("ActualLRP API", func() {
 			JustBeforeEach(func() {
 				tlsEnabledLRPKey = models.NewActualLRPKey(tlsEnabledProcessGuid, tlsEnabledIndex, tlsEnabledDomain)
 				tlsEnabledLRPInstanceKey = models.NewActualLRPInstanceKey(tlsEnabledInstanceGuid, cellID)
-				tlsNetInfo = models.NewActualLRPNetInfo("127.0.0.1", "10.10.10.10", models.ActualLRPNetInfo_PreferredAddressHost, models.NewPortMappingWithTLSProxy(8080, 80, 60042, 443))
+				tlsNetInfo = models.NewActualLRPNetInfo("127.0.0.1", "", "10.10.10.10", models.ActualLRPNetInfo_PreferredAddressHost, models.NewPortMappingWithTLSProxy(8080, 80, 60042, 443))
 
 				tlsEnabledLRP = &models.ActualLRP{
 					ActualLRPKey:            tlsEnabledLRPKey,
@@ -474,7 +474,7 @@ var _ = Describe("ActualLRP API", func() {
 			JustBeforeEach(func() {
 				tlsEnabledLRPKey = models.NewActualLRPKey(tlsEnabledProcessGuid, tlsEnabledIndex, tlsEnabledDomain)
 				tlsEnabledLRPInstanceKey = models.NewActualLRPInstanceKey(tlsEnabledInstanceGuid, cellID)
-				tlsNetInfo = models.NewActualLRPNetInfo("127.0.0.1", "10.10.10.10", models.ActualLRPNetInfo_PreferredAddressHost, models.NewPortMappingWithTLSProxy(8080, 80, 60042, 443))
+				tlsNetInfo = models.NewActualLRPNetInfo("127.0.0.1", "", "10.10.10.10", models.ActualLRPNetInfo_PreferredAddressHost, models.NewPortMappingWithTLSProxy(8080, 80, 60042, 443))
 
 				tlsEnabledLRP = &models.ActualLRP{
 					ActualLRPKey:            tlsEnabledLRPKey,

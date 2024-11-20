@@ -494,7 +494,7 @@ var _ = Describe("ActualLRP", func() {
 		BeforeEach(func() {
 			lrpKey = models.NewActualLRPKey("some-guid", 2, "some-domain")
 			instanceKey = models.NewActualLRPInstanceKey("some-instance-guid", "some-cell-id")
-			netInfo = models.NewActualLRPNetInfo("1.2.3.4", "", "2.2.2.2", models.ActualLRPNetInfo_PreferredAddressUnknown, models.NewPortMapping(5678, 8080), models.NewPortMapping(1234, 8081))
+			netInfo = models.NewActualLRPNetInfo("1.2.3.4", "2.2.2.2", "2000::1", models.ActualLRPNetInfo_PreferredAddressUnknown, models.NewPortMapping(5678, 8080), models.NewPortMapping(1234, 8081))
 
 			lrp = models.ActualLRP{
 				ActualLRPKey:         lrpKey,

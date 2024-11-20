@@ -12,7 +12,7 @@ func NewValidActualLRP(guid string, index int32) *models.ActualLRP {
 	actualLRP := &models.ActualLRP{
 		ActualLRPKey:            models.NewActualLRPKey(guid, index, "some-domain"),
 		ActualLRPInstanceKey:    models.NewActualLRPInstanceKey("some-guid", "some-cell"),
-		ActualLRPNetInfo:        models.NewActualLRPNetInfo("some-address", "", "container-address", models.ActualLRPNetInfo_PreferredAddressUnknown, models.NewPortMapping(2222, 4444)),
+		ActualLRPNetInfo:        models.NewActualLRPNetInfo("some-address", "container-address", "container-address-v6", models.ActualLRPNetInfo_PreferredAddressUnknown, models.NewPortMapping(2222, 4444)),
 		ActualLrpInternalRoutes: NewActualLRPInternalRoutes(),
 		MetricTags:              NewActualLRPMetricTags(),
 		AvailabilityZone:        "some-zone",

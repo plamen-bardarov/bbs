@@ -88,6 +88,8 @@ func (h *ActualLRPLifecycleHandler) StartActualLRP(logger lager.Logger, w http.R
 		routable = r
 	}
 
+	logger.Info("start-actual-lrp-request", lager.Data{"request-data": request})
+
 	err = h.controller.StartActualLRP(req.Context(), logger, request.ActualLrpKey, request.ActualLrpInstanceKey, request.ActualLrpNetInfo, request.ActualLrpInternalRoutes, request.MetricTags, routable, request.AvailabilityZone)
 	response.Error = models.ConvertError(err)
 }

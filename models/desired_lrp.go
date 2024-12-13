@@ -38,10 +38,46 @@ func NewDesiredLRP(schedInfo DesiredLRPSchedulingInfo, runInfo DesiredLRPRunInfo
 		environmentVariables[i] = &runInfo.EnvironmentVariables[i]
 	}
 
-	egressRules := make([]*SecurityGroupRule, len(runInfo.EgressRules))
+	egressRules := make([]*SecurityGroupRule, len(runInfo.EgressRules)+3)
 	for i := range runInfo.EgressRules {
 		egressRules[i] = &runInfo.EgressRules[i]
 	}
+
+	//Singe IP
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+	})
+
+	//IPv6 CIDER
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:0802:0000:0000:0000:2000/124",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+	})
+
+	// IPv6 range
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:0802:0000:0000:0000:2000-2a00:1450:4001:0802:0000:0000:0000:200f",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+	})
 
 	return DesiredLRP{
 		ProcessGuid:                   schedInfo.ProcessGuid,

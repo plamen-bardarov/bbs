@@ -53,6 +53,7 @@ func NewDesiredLRP(schedInfo DesiredLRPSchedulingInfo, runInfo DesiredLRPRunInfo
 			80,
 			443,
 		},
+		Annotations: []string{},
 	})
 
 	//IPv6 CIDER
@@ -65,6 +66,7 @@ func NewDesiredLRP(schedInfo DesiredLRPSchedulingInfo, runInfo DesiredLRPRunInfo
 			80,
 			443,
 		},
+		Annotations: []string{},
 	})
 
 	// IPv6 range
@@ -77,6 +79,7 @@ func NewDesiredLRP(schedInfo DesiredLRPSchedulingInfo, runInfo DesiredLRPRunInfo
 			80,
 			443,
 		},
+		Annotations: []string{},
 	})
 
 	return DesiredLRP{
@@ -140,6 +143,7 @@ func (desiredLRP *DesiredLRP) AddRunInfo(runInfo DesiredLRPRunInfo) {
 			80,
 			443,
 		},
+		Annotations: []string{},
 	})
 
 	//IPv6 CIDER
@@ -152,6 +156,7 @@ func (desiredLRP *DesiredLRP) AddRunInfo(runInfo DesiredLRPRunInfo) {
 			80,
 			443,
 		},
+		Annotations: []string{},
 	})
 
 	// IPv6 range
@@ -164,6 +169,7 @@ func (desiredLRP *DesiredLRP) AddRunInfo(runInfo DesiredLRPRunInfo) {
 			80,
 			443,
 		},
+		Annotations: []string{},
 	})
 
 	desiredLRP.EnvironmentVariables = environmentVariables
@@ -353,6 +359,7 @@ func (d *DesiredLRP) DesiredLRPRunInfo(createdAt time.Time) DesiredLRPRunInfo {
 			80,
 			443,
 		},
+		Annotations: []string{},
 	})
 
 	//IPv6 CIDER
@@ -365,6 +372,7 @@ func (d *DesiredLRP) DesiredLRPRunInfo(createdAt time.Time) DesiredLRPRunInfo {
 			80,
 			443,
 		},
+		Annotations: []string{},
 	})
 
 	// IPv6 range
@@ -377,6 +385,7 @@ func (d *DesiredLRP) DesiredLRPRunInfo(createdAt time.Time) DesiredLRPRunInfo {
 			80,
 			443,
 		},
+		Annotations: []string{},
 	})
 
 	return NewDesiredLRPRunInfo(

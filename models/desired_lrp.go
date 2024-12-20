@@ -3,6 +3,7 @@ package models
 import (
 	bytes "bytes"
 	"encoding/json"
+	"log"
 	"net/url"
 	"regexp"
 	"time"
@@ -38,12 +39,18 @@ func NewDesiredLRP(schedInfo DesiredLRPSchedulingInfo, runInfo DesiredLRPRunInfo
 		environmentVariables[i] = &runInfo.EnvironmentVariables[i]
 	}
 
-	egressRules := make([]*SecurityGroupRule, len(runInfo.EgressRules)+3)
+	// Initialize egressRules slice with capacity to avoid unnecessary reallocations
+	egressRules := make([]*SecurityGroupRule, 0, len(runInfo.EgressRules)+3)
+
+	// Copy existing EgressRules safely
 	for i := range runInfo.EgressRules {
-		egressRules[i] = &runInfo.EgressRules[i]
+		// Create a new pointer to each element in runInfo.EgressRules
+		egressRule := runInfo.EgressRules[i]
+		egressRules = append(egressRules, &egressRule)
 	}
 
-	//Singe IP
+	// Append rules for single IP, IPv6 CIDR, and IPv6 range
+	// Single IP
 	egressRules = append(egressRules, &SecurityGroupRule{
 		Protocol: "tcp",
 		Destinations: []string{
@@ -53,10 +60,10 @@ func NewDesiredLRP(schedInfo DesiredLRPSchedulingInfo, runInfo DesiredLRPRunInfo
 			80,
 			443,
 		},
-		Annotations: []string{},
+		Annotations: []string{}, // Explicitly initialize Annotations to avoid nil slice
 	})
 
-	//IPv6 CIDER
+	// IPv6 CIDR
 	egressRules = append(egressRules, &SecurityGroupRule{
 		Protocol: "tcp",
 		Destinations: []string{
@@ -66,10 +73,10 @@ func NewDesiredLRP(schedInfo DesiredLRPSchedulingInfo, runInfo DesiredLRPRunInfo
 			80,
 			443,
 		},
-		Annotations: []string{},
+		Annotations: []string{}, // Explicitly initialize Annotations
 	})
 
-	// IPv6 range
+	// IPv6 Range
 	egressRules = append(egressRules, &SecurityGroupRule{
 		Protocol: "tcp",
 		Destinations: []string{
@@ -79,7 +86,7 @@ func NewDesiredLRP(schedInfo DesiredLRPSchedulingInfo, runInfo DesiredLRPRunInfo
 			80,
 			443,
 		},
-		Annotations: []string{},
+		Annotations: []string{}, // Explicitly initialize Annotations
 	})
 
 	return DesiredLRP{
@@ -128,12 +135,21 @@ func (desiredLRP *DesiredLRP) AddRunInfo(runInfo DesiredLRPRunInfo) {
 		environmentVariables[i] = &runInfo.EnvironmentVariables[i]
 	}
 
-	egressRules := make([]*SecurityGroupRule, len(runInfo.EgressRules)+3)
-	for i := range runInfo.EgressRules {
-		egressRules[i] = &runInfo.EgressRules[i]
+	// Initialize egressRules slice with capacity to avoid unnecessary reallocations
+	egressRules := make([]*SecurityGroupRule, 0, len(desiredLRP.EgressRules)+3)
+
+	// Copy existing EgressRules safely
+	for i := range desiredLRP.EgressRules {
+		if desiredLRP.EgressRules[i] != nil {
+			egressRules = append(egressRules, desiredLRP.EgressRules[i])
+		} else {
+			// Handle potential nil pointer in desiredLRP.EgressRules
+			log.Printf("Warning: desiredLRP.EgressRules[%d] is nil", i)
+		}
 	}
 
-	//Singe IP
+	// Append rules for single IP, IPv6 CIDR, and IPv6 range
+	// Single IP
 	egressRules = append(egressRules, &SecurityGroupRule{
 		Protocol: "tcp",
 		Destinations: []string{
@@ -143,10 +159,10 @@ func (desiredLRP *DesiredLRP) AddRunInfo(runInfo DesiredLRPRunInfo) {
 			80,
 			443,
 		},
-		Annotations: []string{},
+		Annotations: []string{}, // Explicitly initialize Annotations to avoid nil slice
 	})
 
-	//IPv6 CIDER
+	// IPv6 CIDR
 	egressRules = append(egressRules, &SecurityGroupRule{
 		Protocol: "tcp",
 		Destinations: []string{
@@ -156,10 +172,10 @@ func (desiredLRP *DesiredLRP) AddRunInfo(runInfo DesiredLRPRunInfo) {
 			80,
 			443,
 		},
-		Annotations: []string{},
+		Annotations: []string{}, // Explicitly initialize Annotations
 	})
 
-	// IPv6 range
+	// IPv6 Range
 	egressRules = append(egressRules, &SecurityGroupRule{
 		Protocol: "tcp",
 		Destinations: []string{
@@ -169,7 +185,7 @@ func (desiredLRP *DesiredLRP) AddRunInfo(runInfo DesiredLRPRunInfo) {
 			80,
 			443,
 		},
-		Annotations: []string{},
+		Annotations: []string{}, // Explicitly initialize Annotations
 	})
 
 	desiredLRP.EnvironmentVariables = environmentVariables
@@ -344,12 +360,21 @@ func (d *DesiredLRP) DesiredLRPRunInfo(createdAt time.Time) DesiredLRPRunInfo {
 		environmentVariables[i] = *d.EnvironmentVariables[i]
 	}
 
-	egressRules := make([]SecurityGroupRule, len(d.EgressRules)+3)
+	// Initialize egressRules slice with capacity to avoid unnecessary reallocations
+	egressRules := make([]SecurityGroupRule, 0, len(d.EgressRules)+3)
+
+	// Copy existing EgressRules safely
 	for i := range d.EgressRules {
-		egressRules[i] = *d.EgressRules[i]
+		if d.EgressRules[i] != nil {
+			egressRules = append(egressRules, *d.EgressRules[i])
+		} else {
+			// Handle potential nil pointer in d.EgressRules
+			log.Printf("Warning: d.EgressRules[%d] is nil", i)
+		}
 	}
 
-	//Singe IP
+	// Append rules for single IP, IPv6 CIDR, and IPv6 range
+	// Single IP
 	egressRules = append(egressRules, SecurityGroupRule{
 		Protocol: "tcp",
 		Destinations: []string{
@@ -359,10 +384,10 @@ func (d *DesiredLRP) DesiredLRPRunInfo(createdAt time.Time) DesiredLRPRunInfo {
 			80,
 			443,
 		},
-		Annotations: []string{},
+		Annotations: []string{}, // Explicitly initialize Annotations to avoid nil slice
 	})
 
-	//IPv6 CIDER
+	// IPv6 CIDR
 	egressRules = append(egressRules, SecurityGroupRule{
 		Protocol: "tcp",
 		Destinations: []string{
@@ -372,10 +397,10 @@ func (d *DesiredLRP) DesiredLRPRunInfo(createdAt time.Time) DesiredLRPRunInfo {
 			80,
 			443,
 		},
-		Annotations: []string{},
+		Annotations: []string{}, // Explicitly initialize Annotations
 	})
 
-	// IPv6 range
+	// IPv6 Range
 	egressRules = append(egressRules, SecurityGroupRule{
 		Protocol: "tcp",
 		Destinations: []string{
@@ -385,7 +410,7 @@ func (d *DesiredLRP) DesiredLRPRunInfo(createdAt time.Time) DesiredLRPRunInfo {
 			80,
 			443,
 		},
-		Annotations: []string{},
+		Annotations: []string{}, // Explicitly initialize Annotations
 	})
 
 	return NewDesiredLRPRunInfo(

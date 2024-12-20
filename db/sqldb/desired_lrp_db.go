@@ -30,6 +30,10 @@ func (db *SQLDB) DesireLRP(ctx context.Context, logger lager.Logger, desiredLRP 
 		}
 
 		runInfo := desiredLRP.DesiredLRPRunInfo(db.clock.Now())
+		mf, _ := runInfo.Marshal()
+		logger.Info("runinfo", lager.Data{
+			"run-info": mf,
+		})
 
 		runInfoData, err := db.serializeModel(logger, &runInfo)
 		if err != nil {
@@ -147,6 +151,7 @@ func (db *SQLDB) DesiredLRPs(ctx context.Context, logger lager.Logger, filter mo
 		defer rows.Close()
 
 		results, err = db.fetchDesiredLRPs(ctx, logger, rows, tx)
+		logger.Info("fetch-desired-lrps", lager.Data{"results": results})
 		if err != nil {
 			logger.Error("failed-fetching-row", rows.Err())
 			return db.convertSQLError(rows.Err())

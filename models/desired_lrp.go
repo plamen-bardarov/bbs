@@ -452,19 +452,6 @@ func (d *DesiredLRP) DesiredLRPRunInfo(createdAt time.Time) DesiredLRPRunInfo {
 		Annotations: []string{}, // Explicitly initialize Annotations
 	})
 
-	// ICMPv6
-	egressRules = append(egressRules, SecurityGroupRule{
-		Protocol: "icmpv6",
-		Destinations: []string{
-			"2a00:1450:4001:802::200e",
-		},
-		IcmpInfo: &ICMPInfo{
-			Type: 128,
-			Code: 0,
-		},
-		Annotations: []string{}, // Explicitly initialize Annotations
-	})
-
 	return NewDesiredLRPRunInfo(
 		d.DesiredLRPKey(),
 		createdAt,

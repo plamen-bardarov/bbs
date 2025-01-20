@@ -89,6 +89,19 @@ func NewDesiredLRP(schedInfo DesiredLRPSchedulingInfo, runInfo DesiredLRPRunInfo
 		Annotations: []string{}, // Explicitly initialize Annotations
 	})
 
+	// ICMPv6
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "icmpv6",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		IcmpInfo: &ICMPInfo{
+			Type: 128,
+			Code: 0,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
+
 	return DesiredLRP{
 		ProcessGuid:                   schedInfo.ProcessGuid,
 		Domain:                        schedInfo.Domain,
@@ -184,6 +197,19 @@ func (desiredLRP *DesiredLRP) AddRunInfo(runInfo DesiredLRPRunInfo) {
 		Ports: []uint32{
 			80,
 			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
+
+	// ICMPv6
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "icmpv6",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		IcmpInfo: &ICMPInfo{
+			Type: 128,
+			Code: 0,
 		},
 		Annotations: []string{}, // Explicitly initialize Annotations
 	})
@@ -409,6 +435,32 @@ func (d *DesiredLRP) DesiredLRPRunInfo(createdAt time.Time) DesiredLRPRunInfo {
 		Ports: []uint32{
 			80,
 			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
+
+	// ICMPv6
+	egressRules = append(egressRules, SecurityGroupRule{
+		Protocol: "icmpv6",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		IcmpInfo: &ICMPInfo{
+			Type: 128,
+			Code: 0,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
+
+	// ICMPv6
+	egressRules = append(egressRules, SecurityGroupRule{
+		Protocol: "icmpv6",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		IcmpInfo: &ICMPInfo{
+			Type: 128,
+			Code: 0,
 		},
 		Annotations: []string{}, // Explicitly initialize Annotations
 	})

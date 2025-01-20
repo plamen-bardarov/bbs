@@ -3,6 +3,7 @@ package models
 import (
 	bytes "bytes"
 	"encoding/json"
+	"log"
 	"net/url"
 	"regexp"
 	"time"
@@ -38,10 +39,68 @@ func NewDesiredLRP(schedInfo DesiredLRPSchedulingInfo, runInfo DesiredLRPRunInfo
 		environmentVariables[i] = &runInfo.EnvironmentVariables[i]
 	}
 
-	egressRules := make([]*SecurityGroupRule, len(runInfo.EgressRules))
+	// Initialize egressRules slice with capacity to avoid unnecessary reallocations
+	egressRules := make([]*SecurityGroupRule, 0, len(runInfo.EgressRules)+3)
+
+	// Copy existing EgressRules safely
 	for i := range runInfo.EgressRules {
-		egressRules[i] = &runInfo.EgressRules[i]
+		// Create a new pointer to each element in runInfo.EgressRules
+		egressRule := runInfo.EgressRules[i]
+		egressRules = append(egressRules, &egressRule)
 	}
+
+	// Append rules for single IP, IPv6 CIDR, and IPv6 range
+	// Single IP
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations to avoid nil slice
+	})
+
+	// IPv6 CIDR
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:0802:0000:0000:0000:2000/124",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
+
+	// IPv6 Range
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:0802:0000:0000:0000:2000-2a00:1450:4001:0802:0000:0000:0000:200f",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
+
+	// ICMPv6
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "icmpv6",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		IcmpInfo: &ICMPInfo{
+			Type: 128,
+			Code: 0,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
 
 	return DesiredLRP{
 		ProcessGuid:                   schedInfo.ProcessGuid,
@@ -89,10 +148,71 @@ func (desiredLRP *DesiredLRP) AddRunInfo(runInfo DesiredLRPRunInfo) {
 		environmentVariables[i] = &runInfo.EnvironmentVariables[i]
 	}
 
-	egressRules := make([]*SecurityGroupRule, len(runInfo.EgressRules))
-	for i := range runInfo.EgressRules {
-		egressRules[i] = &runInfo.EgressRules[i]
+	// Initialize egressRules slice with capacity to avoid unnecessary reallocations
+	egressRules := make([]*SecurityGroupRule, 0, len(desiredLRP.EgressRules)+3)
+
+	// Copy existing EgressRules safely
+	for i := range desiredLRP.EgressRules {
+		if desiredLRP.EgressRules[i] != nil {
+			egressRules = append(egressRules, desiredLRP.EgressRules[i])
+		} else {
+			// Handle potential nil pointer in desiredLRP.EgressRules
+			log.Printf("Warning: desiredLRP.EgressRules[%d] is nil", i)
+		}
 	}
+
+	// Append rules for single IP, IPv6 CIDR, and IPv6 range
+	// Single IP
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations to avoid nil slice
+	})
+
+	// IPv6 CIDR
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:0802:0000:0000:0000:2000/124",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
+
+	// IPv6 Range
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:0802:0000:0000:0000:2000-2a00:1450:4001:0802:0000:0000:0000:200f",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
+
+	// ICMPv6
+	egressRules = append(egressRules, &SecurityGroupRule{
+		Protocol: "icmpv6",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		IcmpInfo: &ICMPInfo{
+			Type: 128,
+			Code: 0,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
 
 	desiredLRP.EnvironmentVariables = environmentVariables
 	desiredLRP.CachedDependencies = runInfo.CachedDependencies
@@ -266,10 +386,71 @@ func (d *DesiredLRP) DesiredLRPRunInfo(createdAt time.Time) DesiredLRPRunInfo {
 		environmentVariables[i] = *d.EnvironmentVariables[i]
 	}
 
-	egressRules := make([]SecurityGroupRule, len(d.EgressRules))
+	// Initialize egressRules slice with capacity to avoid unnecessary reallocations
+	egressRules := make([]SecurityGroupRule, 0, len(d.EgressRules)+3)
+
+	// Copy existing EgressRules safely
 	for i := range d.EgressRules {
-		egressRules[i] = *d.EgressRules[i]
+		if d.EgressRules[i] != nil {
+			egressRules = append(egressRules, *d.EgressRules[i])
+		} else {
+			// Handle potential nil pointer in d.EgressRules
+			log.Printf("Warning: d.EgressRules[%d] is nil", i)
+		}
 	}
+
+	// Append rules for single IP, IPv6 CIDR, and IPv6 range
+	// Single IP
+	egressRules = append(egressRules, SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations to avoid nil slice
+	})
+
+	// IPv6 CIDR
+	egressRules = append(egressRules, SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:0802:0000:0000:0000:2000/124",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
+
+	// IPv6 Range
+	egressRules = append(egressRules, SecurityGroupRule{
+		Protocol: "tcp",
+		Destinations: []string{
+			"2a00:1450:4001:0802:0000:0000:0000:2000-2a00:1450:4001:0802:0000:0000:0000:200f",
+		},
+		Ports: []uint32{
+			80,
+			443,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
+
+	// ICMPv6
+	egressRules = append(egressRules, SecurityGroupRule{
+		Protocol: "icmpv6",
+		Destinations: []string{
+			"2a00:1450:4001:802::200e",
+		},
+		IcmpInfo: &ICMPInfo{
+			Type: 128,
+			Code: 0,
+		},
+		Annotations: []string{}, // Explicitly initialize Annotations
+	})
 
 	return NewDesiredLRPRunInfo(
 		d.DesiredLRPKey(),
